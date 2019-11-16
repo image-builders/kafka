@@ -1,0 +1,10 @@
+#!/usr/bin/execlineb -P
+
+s6-setuidgid kafka
+
+cd /usr/local/kafka
+
+export KAFKA_HEAP_OPTS "-Xmx128M -Xms128M"
+
+./bin/zookeeper-server-start.sh ./config/zookeeper.properties
+

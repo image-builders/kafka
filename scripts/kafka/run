@@ -1,0 +1,20 @@
+#!/usr/bin/execlineb -P
+
+s6-setuidgid kafka
+
+cd /usr/local/kafka
+
+importas advertised_host ADVERTISED_HOST
+
+backtick OVERRIDE_HOST {
+  ifte { echo -n "127.0.0.1"      }
+       { echo -n $advertised_host }
+  test -z $advertised_host
+}
+
+importas override_host OVERRIDE_HOST
+
+export KAFKA_HEAP_OPTS "-Xmx256M -Xms256M"
+
+./bin/kafka-server-start.sh ./config/server.properties --override advertised.listeners=PLAINTEXT://${override_host}:9092
+
