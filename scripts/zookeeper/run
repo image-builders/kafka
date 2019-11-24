@@ -1,10 +1,20 @@
 #!/usr/bin/execlineb -P
 
+# -- load the container's environment variables.
+s6-envdir -fn -- /var/run/s6/container_environment
+
+# -- bookiping - we don't need this.
+unexport JAVA_HOME
+
+# -- run as kafka.
 s6-setuidgid kafka
 
+# -- main.
 cd /usr/local/kafka
 
-export KAFKA_HEAP_OPTS "-Xmx128M -Xms128M"
+importas -D "-Xmx128M -Xms128M" override_heap_opts ZOOKEEPER_HEAP_OPTS
+
+backtick -n KAFKA_HEAP_OPTS { echo $override_heap_opts }
 
 ./bin/zookeeper-server-start.sh ./config/zookeeper.properties
 
