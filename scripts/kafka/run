@@ -1,20 +1,21 @@
 #!/usr/bin/execlineb -P
 
+# -- load the container's environment variables.
+s6-envdir -fn -- /var/run/s6/container_environment
+
+# -- bookiping - we don't need this.
+unexport JAVA_HOME
+
+# -- run as kafka.
 s6-setuidgid kafka
 
+# -- main.
 cd /usr/local/kafka
 
-importas advertised_host ADVERTISED_HOST
+importas -D "127.0.0.1"         override_host      ADVERTISED_HOST
+importas -D "-Xmx256M -Xms256M" override_heap_opts KAFKA_HEAP_OPTS
 
-backtick OVERRIDE_HOST {
-  ifte { echo -n "127.0.0.1"      }
-       { echo -n $advertised_host }
-  test -z $advertised_host
-}
-
-importas override_host OVERRIDE_HOST
-
-export KAFKA_HEAP_OPTS "-Xmx256M -Xms256M"
+backtick -n KAFKA_HEAP_OPTS { echo $override_heap_opts }
 
 ./bin/kafka-server-start.sh ./config/server.properties --override advertised.listeners=PLAINTEXT://${override_host}:9092
 
