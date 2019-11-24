@@ -42,3 +42,7 @@ Adjust the Java heap available for Kafka. Defaults to `KAFKA_HEAP_OPTS="-Xmx256M
 ```console
 $ docker run -e KAFKA_HEAP_OPTS="-Xmx1024M -Xms1024M" --name a-kafka -p 9092:9092 -d paperlib/kafka
 ```
+
+### `ZOOKEEPER_HEAP_OPTS`
+
+Adjust the Java heap available for Zookeeper. Defaults to `ZOOKEEPER_HEAP_OPTS="-Xmx128M -Xms128M"`.
