@@ -29,17 +29,15 @@ When you start the `kafka` image, you can adjust the configuration of the Kafka 
 
 ### `ADVERTISED_HOST`
 
-Adjust the Kafka daemon advertised host. This is the hostname of the `advertised.listeners` property in the `server.properties` file.
+Adjust the Kafka daemon advertised host. This is the hostname of the `advertised.listeners` property in the `server.properties` file. Defaults to `ADVERTISED_HOST=127.0.0.1`
 
 ```console
-advertised.listeners=PLAINTEXT://${override_host}:9092
+advertised.listeners=PLAINTEXT://${ADVERTISED_HOST}:9092
 ```
 
 ### `KAFKA_HEAP_OPTS`
 
 Adjust the Java heap available for Kafka. Defaults to `KAFKA_HEAP_OPTS="-Xmx256M -Xms256M"`.
-
-Example usage:
 
 ```console
 $ docker run -e KAFKA_HEAP_OPTS="-Xmx1024M -Xms1024M" --name a-kafka -p 9092:9092 -d paperlib/kafka
