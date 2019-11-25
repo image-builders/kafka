@@ -46,3 +46,35 @@ $ docker run -e KAFKA_HEAP_OPTS="-Xmx1024M -Xms1024M" --name a-kafka -p 9092:909
 ### `ZOOKEEPER_HEAP_OPTS`
 
 Adjust the Java heap available for Zookeeper. Defaults to `ZOOKEEPER_HEAP_OPTS="-Xmx128M -Xms128M"`.
+
+## Examples
+
+The following examples will be in python and will use the `kafka-python` library:
+
+```console
+$ sudo -H pip install kafka-python
+```
+
+Next we send a few messages over a topic named `examples` with the following script:
+
+```python
+from kafka import KafkaProducer
+
+producer = KafkaProducer(bootstrap_servers='localhost:9092')
+
+producer.send('sample', b'Hello, World!')
+producer.send('sample', key=b'message-two', value=b'This is Kafka-Python')
+
+producer.flush()
+```
+
+and then we get these messages with a receiver script:
+
+```python
+from kafka import KafkaConsumer
+
+consumer = KafkaConsumer('sample')
+
+for message in consumer:
+    print (message)
+```
