@@ -49,21 +49,21 @@ Adjust the Java heap available for Zookeeper. Defaults to `ZOOKEEPER_HEAP_OPTS="
 
 ## Examples
 
-The following examples will be in python and will use the `kafka-python` library:
+The following examples are in python and use its `kafka-python` library, so we first have to install it:
 
 ```console
 $ sudo -H pip install kafka-python
 ```
 
-Next we send a few messages over a topic named `examples` with the following script:
+Next we send a few messages over a topic named `example` with the following script:
 
 ```python
 from kafka import KafkaProducer
 
 producer = KafkaProducer(bootstrap_servers='localhost:9092')
 
-producer.send('sample', b'Hello, World!')
-producer.send('sample', key=b'message-two', value=b'This is Kafka-Python')
+producer.send('example', b'Hello, World!')
+producer.send('example', key=b'message-two', value=b'This is Kafka-Python')
 
 producer.flush()
 ```
@@ -73,8 +73,11 @@ and then we get these messages with a receiver script:
 ```python
 from kafka import KafkaConsumer
 
-consumer = KafkaConsumer('sample')
+consumer = KafkaConsumer('example')
 
 for message in consumer:
     print (message)
 ```
+
+et voilà! :-)
+
