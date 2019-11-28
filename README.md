@@ -79,5 +79,5 @@ for message in consumer:
     print (message)
 ```
 
-et voilà! :-)
+et voilà! 🙂
 
