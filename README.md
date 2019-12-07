@@ -85,7 +85,7 @@ and then we get these messages with a receiver script:
 ```python
 from kafka import KafkaConsumer
 
-consumer = KafkaConsumer('example')
+consumer = KafkaConsumer('example', group_id='a_readers_group', auto_offset_reset='earliest')
 
 for message in consumer:
     print (message)
