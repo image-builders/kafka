@@ -55,6 +55,18 @@ The following examples are in python and use its `kafka-python` library, so we f
 $ sudo -H pip install kafka-python
 ```
 
+and create the `topic` over which we are going to be sending our messages:
+
+```python
+from kafka.admin import KafkaAdminClient, NewTopic
+
+kafka = KafkaAdminClient(bootstrap_servers="localhost:9092")
+
+topics = []
+topics.append(NewTopic(name="example", num_partitions=1, replication_factor=1))
+kafka.create_topics(topics)
+```
+
 Next we send a few messages over a topic named `example` with the following script:
 
 ```python
