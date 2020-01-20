@@ -47,6 +47,22 @@ $ docker run -e KAFKA_HEAP_OPTS="-Xmx1024M -Xms1024M" --name a-kafka -p 9092:909
 
 Adjust the Java heap available for Zookeeper. Defaults to `ZOOKEEPER_HEAP_OPTS="-Xmx128M -Xms128M"`.
 
+### `LOG_DIRS`
+
+Change Kafka's storage location (defauts to `/tmp/kafka-logs`.)
+If we wanted to persist data between container restarts, we could simply mount a volume/directory (without the need to set `LOG_DIRS`):
+
+```console
+$ docker run --mount type=bind,source="$(pwd)"/your-dir-log,target=/tmp/kafka-logs --name a-kafka -p 9092:9092 -d paperlib/kafka
+```
+
+and `LOG_DIRS` lets us change that default `/tmp/kafka-logs` storage location to one of our liking:
+
+```console
+$ export LOG_DIRS=/usr/local/kafka/dirs
+$ docker run --mount type=bind,source="$(pwd)"/your-dir-log,target=$LOG_DIRS -e LOG_DIRS=$LOG_DIRS --name a-kafka -p 9092:9092 -d paperlib/kafka
+```
+
 ## Examples
 
 The following examples are in python and use its `kafka-python` library, so we first have to install it:
