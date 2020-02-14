@@ -1,0 +1,57 @@
+#!/usr/bin/with-contenv sh
+
+if [ $JDBC_CONNECTOR_CONNECTION_URL ]; then
+  rm -f /etc/services.d/connect/down
+
+  if [ -z ${JDBC_CONNECTOR_NAME+x} ]; then
+    JDBC_CONNECTOR_NAME=jdbc-connector-paperlib
+  fi
+  if [ -z ${JDBC_CONNECTOR_POLL_INTERVAL_MS+x} ]; then
+    JDBC_CONNECTOR_POLL_INTERVAL_MS=5000
+  fi
+  
+
+  CONFIGURATION="name=$JDBC_CONNECTOR_NAME
+connector.class=io.confluent.connect.jdbc.JdbcSourceConnector
+tasks.max=1
+connection.url=jdbc:$JDBC_CONNECTOR_CONNECTION_URL
+connection.user=$JDBC_CONNECTOR_CONNECTION_USER
+connection.password=$JDBC_CONNECTOR_CONNECTION_PASSWORD
+poll.interval.ms=$JDBC_CONNECTOR_POLL_INTERVAL_MS
+topic.prefix=$JDBC_CONNECTOR_TOPIC_PREFIX"
+
+   
+  if [ ! -z ${JDBC_CONNECTOR_CATALOG_PATTERN+x} ]; then
+    CONFIGURATION="$CONFIGURATION
+catalog.pattern=$JDBC_CONNECTOR_CATALOG_PATTERN"
+  fi
+
+  if [ ! -z ${JDBC_CONNECTOR_TABLE_WHITELIST+x} ]; then
+    CONFIGURATION="$CONFIGURATION
+table.whitelist=$JDBC_CONNECTOR_TABLE_WHITELIST"
+  fi
+
+  if [ ! -z ${JDBC_CONNECTOR_TIMESTAMP_COLUMN_NAME+x} ] && [ ! -z ${JDBC_CONNECTOR_INCREMENTING_COLUMN_NAME+x} ]; then
+    CONFIGURATION="$CONFIGURATION
+mode=timestamp+incrementing
+timestamp.column.name=$JDBC_CONNECTOR_TIMESTAMP_COLUMN_NAME
+incrementing.column.name=$JDBC_CONNECTOR_INCREMENTING_COLUMN_NAME"
+  elif [ ! -z ${JDBC_CONNECTOR_TIMESTAMP_COLUMN_NAME+x} ]; then
+    CONFIGURATION="$CONFIGURATION
+mode=timestamp
+timestamp.column.name=$JDBC_CONNECTOR_TIMESTAMP_COLUMN_NAME"
+  elif [ ! -z ${JDBC_CONNECTOR_INCREMENTING_COLUMN_NAME+x} ]; then
+    CONFIGURATION="$CONFIGURATION
+mode=incrementing
+incrementing.column.name=$JDBC_CONNECTOR_INCREMENTING_COLUMN_NAME"
+  else
+    CONFIGURATION="$CONFIGURATION
+mode=bulk"
+  fi
+
+  echo "$CONFIGURATION" > /usr/local/kafka/config/connect-mariadb-source.properties
+
+else
+  touch /etc/services.d/connect/down
+fi
+

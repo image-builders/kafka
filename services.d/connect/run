@@ -1,0 +1,26 @@
+#!/usr/bin/execlineb -P
+
+# -- make sure the kafka broker is really up first.
+if { s6-svwait -t 120000 -u /var/run/s6/services/kafka }
+
+# -- load the container's environment variables.
+s6-envdir -fn -- /var/run/s6/container_environment
+
+# -- bookiping - we don't need this.
+unexport JAVA_HOME
+
+# -- run as kafka.
+s6-setuidgid kafka
+
+# -- main.
+cd /usr/local/kafka
+
+importas -D "-Xmx256M -Xms256M" override_kafka_heap_opts KAFKA_HEAP_OPTS
+
+elglob classpath /usr/local/kafka/share/mysql-connector-java-*.jar
+
+backtick -n CLASSPATH       { echo $classpath                }
+backtick -n KAFKA_HEAP_OPTS { echo $override_kafka_heap_opts }
+
+./bin/connect-standalone.sh ./config/connect-standalone.properties ./config/connect-mariadb-source.properties
+
