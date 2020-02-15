@@ -15,12 +15,12 @@ s6-setuidgid kafka
 # -- main.
 cd /usr/local/kafka
 
-importas -D "-Xmx256M -Xms256M" override_kafka_heap_opts KAFKA_HEAP_OPTS
+importas -D "-Xmx64M -Xms64M" override_heap_opts CONNECTOR_HEAP_OPTS
 
 elglob classpath /usr/local/kafka/share/mysql-connector-java-*.jar
 
-backtick -n CLASSPATH       { echo $classpath                }
-backtick -n KAFKA_HEAP_OPTS { echo $override_kafka_heap_opts }
+backtick -n CLASSPATH       { echo $classpath          }
+backtick -n KAFKA_HEAP_OPTS { echo $override_heap_opts }
 
 ./bin/connect-standalone.sh ./config/connect-standalone.properties ./config/connect-mariadb-source.properties
 
