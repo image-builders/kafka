@@ -109,3 +109,48 @@ for message in consumer:
 
 et voilà! 🙂
 
+# Advanced Topics
+
+This image image includes Confluence's JDBC Connector since its disk space requirements are negligible,
+and it's extremely common and handy to push or pull data to a database through such a JDBC Connector.
+
+There are a number of new environment variables required to set it up, so with start with this.
+
+## Additional Environment Variables (JDBC Connector)
+
+### `JDBC_CONNECTOR_CONNECTION_URL`
+
+The JDBC connection URL (required.) An example for MySQL would be of the form: `mysql://<db_server>:3306/<db_name>`
+
+### `JDBC_CONNECTOR_CONNECTION_USER`
+
+The user that will be used to connect to the database (could be part of the connection URL.)
+
+### `JDBC_CONNECTOR_CONNECTION_PASSWORD`
+
+The corresponding password for the user that will be used to connect to the database (could be part of the connection URL.)
+
+### `JDBC_CONNECTOR_TIMESTAMP_COLUMN_NAME`
+
+Comma separated list of one or more timestamp columns to detect new or modified rows.
+
+### `JDBC_CONNECTOR_INCREMENTING_COLUMN_NAME`
+
+The name of the strictly incrementing column to use to detect new rows.
+
+### `JDBC_CONNECTOR_TABLE_WHITELIST`
+
+List of tables to include.
+
+
+## Examples
+
+If no JDBC Connector environment variables are specified, no JDBC Connector is started.
+If there is (in particular the `JDBC_CONNECTOR_CONNECTION_URL`) then a JDBC Connector process is started.
+
+The following example boots the Kafka image with its JDBC Connector started:
+
+```console
+$ docker run --name a-connect-kafka -p 9092:9092 -e JDBC_CONNECTOR_CONNECTION_URL="mysql://dbserver:3306/dbname" -e JDBC_CONNECTOR_CONNECTION_USER=a_db_user -e JDBC_CONNECTOR_CONNECTION_PASSWORD=a_db_user_password -e JDBC_CONNECTOR_TIMESTAMP_COLUMN_NAME=example_column_ts -e JDBC_CONNECTOR_INCREMENTING_COLUMN_NAME=id -e JDBC_CONNECTOR_TABLE_WHITELIST=a_table --network paperlib-net -d paperlib/kafka
+```
+
