@@ -1,6 +1,6 @@
 FROM openjdk:8u212-jre-alpine AS builder
 
-ARG KAFKA_RELEASE=https://www-us.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz
+ARG KAFKA_RELEASE=https://www-us.apache.org/dist/kafka/2.4.1/kafka_2.12-2.4.1.tgz
 ENV KAFKA_RELEASE=${KAFKA_RELEASE}
 
 ADD ${KAFKA_RELEASE}      /tmp/kafka.tgz
@@ -10,7 +10,7 @@ ARG KAFKA_CONNECT_JDBC=https://packages.confluent.io/maven/io/confluent/kafka-co
 ARG MYSQL_CONNECTOR_JAVA_SOURCE=https://dev.mysql.com/get/Downloads/Connector-J
 ARG MYSQL_CONNECTOR_JAVA=mysql-connector-java-8.0.19
 
-RUN tar xzf /tmp/kafka.tgz -C /usr/local && cd /usr/local && mv kafka_2.12-2.4.0 kafka            && \
+RUN tar xzf /tmp/kafka.tgz -C /usr/local && cd /usr/local && mv kafka_2.12-2.4.1 kafka            && \
     cd /usr/local/kafka && mkdir plugins share && cd share                                        && \
     wget -qO- $MYSQL_CONNECTOR_JAVA_SOURCE/$MYSQL_CONNECTOR_JAVA.zip                               | \
     unzip -p - $MYSQL_CONNECTOR_JAVA/$MYSQL_CONNECTOR_JAVA.jar > $MYSQL_CONNECTOR_JAVA.jar        && \
